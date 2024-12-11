@@ -17,7 +17,6 @@ format:
     margin:
       x: 2cm
       y: 2cm
-    mainfont: "Hiragino Mincho ProN"
     fontsize: "22pt"
 ---
 """
