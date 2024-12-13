@@ -59,26 +59,30 @@ end
 
 function imgreadme(m::Module)
     readme = basename(REPL.find_readme(m))
-    imgs = mktempdir() do d
-        cp(pkgdir(m), joinpath(d), force=true, follow_symlinks=true)
-        readme = joinpath(d, readme)
-        IOCapture.capture() do
-            chmod(joinpath(d), 0o700, recursive=true)
-            run(`$(quarto()) render $(readme) --to typst --metadata keep-typ:true`)
-            typpath = first(splitext(readme)) * ".typ"
-            @assert isfile(typpath)
-            pngtemplate = joinpath(d, "sample_{n}.png")
-            run(`$(quarto()) typst compile $(typpath) $(pngtemplate)`)
+    try
+        imgs = mktempdir() do d
+            cp(pkgdir(m), joinpath(d), force=true, follow_symlinks=true)
+            readme = joinpath(d, readme)
+            IOCapture.capture() do
+                chmod(joinpath(d), 0o700, recursive=true)
+                run(`$(quarto()) render $(readme) --to typst --metadata keep-typ:true`)
+                typpath = first(splitext(readme)) * ".typ"
+                @assert isfile(typpath)
+                pngtemplate = joinpath(d, "sample_{n}.png")
+                run(`$(quarto()) typst compile $(typpath) $(pngtemplate)`)
+            end
+            filter(readdir(d, join = true)) do f
+                pattern = r"^sample_[0-9]+\.png$"
+                m = match(pattern, basename(f))
+                !isnothing(m)
+            end .|> load
         end
-        filter(readdir(d, join = true)) do f
-            pattern = r"^sample_[0-9]+\.png$"
-            m = match(pattern, basename(f))
-            !isnothing(m)
-        end .|> load
-    end
 
-    for c in Iterators.partition(imgs, 2)
-        Sixel.sixel_encode(hcat(c...))
+        for c in Iterators.partition(imgs, 2)
+            Sixel.sixel_encode(hcat(c...))
+        end
+    catch
+        error("Sorry, Quarto can't render your $(basename(readme)) for $(m)")
     end
 end
 
