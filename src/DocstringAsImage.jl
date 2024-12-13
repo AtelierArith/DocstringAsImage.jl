@@ -17,31 +17,35 @@ format:
     margin:
       x: 2cm
       y: 2cm
+    #mainfont: "Hiragino Mincho ProN"
     fontsize: "22pt"
 ---
 """
 
-function issupported(x)::Bool
-    return true
-end
-
-function issupported(m::Module)::Bool
-    return Docs.hasdoc(m, nameof(m))
-end
-
 #@imgdoc sin
 #@imgdoc Module
-macro imgdoc(obj::Symbol)
+macro imgdoc(s::Symbol)
+    obj = esc(s)
     quote
-        if !issupported($(esc(obj)))
-            error(
-                "Sorry, currently, DocstringAsImage does not support the Module which does not have docstring" *
-                string($(esc(obj))) *
-                " because Quarto may not compile the README.md correctly.",
-            )
+        docstr = if $(obj) isa Module
+            local m = $(obj)
+            if Docs.hasdoc(m, nameof(m))
+                Doc.doc(m)
+            else
+                r = REPL.find_readme(m)
+                if isnothing(r)
+                    error(
+                        "Sorry, currently, DocstringAsImage does not support the" * " @doc " * string(m) *
+                        " because it has not docstring nor README.md.",
+                    )
+                else
+                    imgreadme(m)
+                end
+            end
+        else
+            docstr = Docs.doc($(obj))
+            imgdoc(docstr)
         end
-        docstr = Docs.doc($(esc(obj)))
-        imgdoc(docstr)
     end
 end
 
@@ -50,6 +54,31 @@ macro imgdoc(obj::Expr)
     quote
         docstr = Docs.doc($(esc(obj.args[1])))
         imgdoc(docstr)
+    end
+end
+
+function imgreadme(m::Module)
+    readme = basename(REPL.find_readme(m))
+    imgs = mktempdir() do d
+        cp(pkgdir(m), joinpath(d), force=true, follow_symlinks=true)
+        readme = joinpath(d, readme)
+        IOCapture.capture() do
+            chmod(joinpath(d), 0o700, recursive=true)
+            run(`$(quarto()) render $(readme) --to typst --metadata keep-typ:true`)
+            typpath = first(splitext(readme)) * ".typ"
+            @assert isfile(typpath)
+            pngtemplate = joinpath(d, "sample_{n}.png")
+            run(`$(quarto()) typst compile $(typpath) $(pngtemplate)`)
+        end
+        filter(readdir(d, join = true)) do f
+            pattern = r"^sample_[0-9]+\.png$"
+            m = match(pattern, basename(f))
+            !isnothing(m)
+        end .|> load
+    end
+
+    for c in Iterators.partition(imgs, 2)
+        Sixel.sixel_encode(hcat(c...))
     end
 end
 
