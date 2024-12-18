@@ -1,7 +1,7 @@
 module DocstringAsImage
 
 using Sixel
-using FileIO, ImageIO
+using FileIO, ImageIO, ImageCore
 using Markdown
 using quarto_jll
 import REPL # Required to collect all docstrings
@@ -86,6 +86,10 @@ function imgreadme(m::Module)
     end
 end
 
+function todark(img::Matrix{RGBA{N0f8}})
+    RGBA(1.0, 1.0, 1.0, 1.0) .- img .+ RGBA(0.0, 0.0, 0.0, 1.0)
+end
+
 function imgdoc(docstr)
     md = Markdown.MD(docstr)
 
@@ -120,8 +124,7 @@ function imgdoc(docstr)
             pattern = r"^sample_[0-9]+\.png$"
             m = match(pattern, basename(f))
             !isnothing(m)
-        end .|> load
-
+        end .|> load .|> todark
     end
 
     for c in Iterators.partition(imgs, 2)
