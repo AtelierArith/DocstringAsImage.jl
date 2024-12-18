@@ -30,7 +30,7 @@ macro imgdoc(s::Symbol)
         docstr = if $(obj) isa Module
             local m = $(obj)
             if Docs.hasdoc(m, nameof(m))
-                Doc.doc(m)
+                imgdoc(Docs.doc(m))
             else
                 r = REPL.find_readme(m)
                 if isnothing(r)
