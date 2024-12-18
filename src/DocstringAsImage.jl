@@ -103,7 +103,7 @@ function imgdoc(docstr)
         r"```math\s*(.*?)\s*```"m => s"$$\1$$",
         r"``(.*?)``" => s"$\1$",
     )
-    output_text = replace(output_text, r"^```jldoctest$"m => "```julia")
+    output_text = replace(output_text, r"^```jldoctest;.*$"m => "```julia")
     output_text = replace(output_text, r"^```julia-repl$"m => "```julia")
     imgs = mktempdir() do d
         qmdpath = joinpath(d, "sample.qmd")
