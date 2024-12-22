@@ -4,6 +4,8 @@
 
 This package allows us to visualize Julia docstrings as images. This feature works only in terminals that support Sixel Graphics. Internally we use Quarto and Typst to render images. We use Sixel.jl package to render generated images in your terminal.
 
+<img width="1131" alt="image" src="https://github.com/user-attachments/assets/96ceb5f8-fb10-443f-9512-73b8eb10eba9" />
+
 ## Setup
 
 ```
