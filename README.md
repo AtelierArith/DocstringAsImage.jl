@@ -1,8 +1,16 @@
 # DocstringAsImage.jl
 
-This package visualizes Julia docstrings for functions with images.
+[![CI](https://github.com/AtelierArith/DocstringAsImage.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/AtelierArith/DocstringAsImage.jl/actions/workflows/CI.yml)
+
+This package allows us to visualize Julia docstrings as images. This feature works only in terminals that support Sixel Graphics. Internally we use Quarto and Typst to render images. We use Sixel.jl package to render generated images in your terminal.
 
 ## Setup
+
+```
+julia> using Pkg; Pkg.add("DocstringAsImage")
+```
+
+To build from source, run the following commands:
 
 ```sh
 $ git clone https://github.com/AtelierArith/DocstringAsImage.jl.git
@@ -13,6 +21,8 @@ Manifest.toml Project.toml  README.md     src
 ```
 
 ## Usage
+
+Our package exports `@imgdoc` macro. It works like the `@doc` macro.
 
 ```julia
 $ julia
