@@ -35,7 +35,9 @@ macro imgdoc(s::Symbol)
                 r = REPL.find_readme(m)
                 if isnothing(r)
                     error(
-                        "Sorry, currently, DocstringAsImage does not support the" * " @doc " * string(m) *
+                        "Sorry, currently, DocstringAsImage does not support the" *
+                        " @doc " *
+                        string(m) *
                         " because it has not docstring nor README.md.",
                     )
                 else
@@ -61,10 +63,10 @@ function imgreadme(m::Module)
     readme = basename(REPL.find_readme(m))
     try
         imgs = mktempdir() do d
-            cp(pkgdir(m), joinpath(d), force=true, follow_symlinks=true)
+            cp(pkgdir(m), joinpath(d), force = true, follow_symlinks = true)
             readme = joinpath(d, readme)
             IOCapture.capture() do
-                chmod(joinpath(d), 0o700, recursive=true)
+                chmod(joinpath(d), 0o700, recursive = true)
                 run(`$(quarto()) render $(readme) --to typst --metadata keep-typ:true`)
                 typpath = first(splitext(readme)) * ".typ"
                 @assert isfile(typpath)

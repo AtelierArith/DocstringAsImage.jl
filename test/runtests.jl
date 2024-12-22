@@ -8,5 +8,5 @@ using JET
 end
 
 @testset "JET" begin
-    JET.report_package(DocstringAsImage, target_defined_modules=true)
+    JET.report_package(DocstringAsImage, target_defined_modules = true)
 end
