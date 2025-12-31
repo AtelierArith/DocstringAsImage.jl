@@ -10,7 +10,7 @@ end
 
 if VERSION >= v"1.12.0" # The latest stable version of Julia
     @testset "JET" begin
-        JET.report_package(DocstringAsImage, target_defined_modules = true)
+        JET.report_package(DocstringAsImage, target_modules=(DocstringAsImage,))
     end
 end
 
