@@ -14,7 +14,7 @@ Sixel = "45858cf5-a6b0-47a3-bbea-62219f50df47"
 quarto_jll = "b7163347-bfae-5fd9-aba4-19f139889d78"
 
 [compat]
-julia = "1"
+julia = "1.10"
 Aqua = "0.8.9"
 FileIO = "1.16.6"
 IOCapture = "0.2.5, 1"
