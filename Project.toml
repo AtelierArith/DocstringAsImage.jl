@@ -1,7 +1,7 @@
 name = "DocstringAsImage"
 uuid = "cb150ec3-d779-4cdb-98dd-b48d53cba988"
 authors = ["SatoshiTerasaki <terasakisatoshi.math@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
@@ -20,7 +20,7 @@ FileIO = "1.16.6"
 IOCapture = "0.2.5, 1"
 ImageCore = "0.10.5"
 ImageIO = "0.6.9"
-JET = "0.9, 0.11"
+JET = "0.9, 0.11, 0.13"
 Markdown = "1"
 REPL = "1"
 Sixel = "0.1.3"
